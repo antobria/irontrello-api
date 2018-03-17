@@ -28,8 +28,23 @@ module.exports.create = (req, res, next) => {
 };
 
 module.exports.update = (req, res, next) => {
-  
+ Card.findByIdAndUpdate(req.params.id,{ $set: req.body})
+  .then(card => {
+    if(!card){
+      next(new ApiError('Card does not exist',404));
+    }
+    res.status(200).json({message: "Card modified ok"});
+  })
+  .catch(error => next(new ApiError('Error while editing the card',500))); 
 };
 
 module.exports.destroy = (req, res, next) => {
+  Card.findOneAndRemove(req.params.id)
+  .then(card => {
+    if(!card){
+      next(new ApiError('Card does not exist',404));
+    }
+    res.status(200).json({message: "Card deleted ok"});
+  })
+  .catch(error => next(new ApiError('Error while deleting the card',500))); 
 };
